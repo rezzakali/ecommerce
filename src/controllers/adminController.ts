@@ -14,9 +14,9 @@ export async function getAdmins(req: Request) {
 
     const admins: IAdmin[] = await Admin.find().select('-password -__v');
     return NextResponse.json({ data: admins }, { status: 200 });
-  } catch (error) {
+  } catch (error: any) {
     return NextResponse.json(
-      { message: 'Error fetching admins' },
+      { message: error?.message || 'Internal Server Error' },
       { status: 500 }
     );
   }
@@ -35,9 +35,9 @@ export async function getAdminById(req: Request, id: string) {
     if (!admin)
       return NextResponse.json({ message: 'Admin not found' }, { status: 404 });
     return NextResponse.json({ data: admin }, { status: 200 });
-  } catch (error) {
+  } catch (error: any) {
     return NextResponse.json(
-      { message: 'Error fetching admin' },
+      { message: error?.message || 'Internal Server Error' },
       { status: 500 }
     );
   }
@@ -90,9 +90,9 @@ export async function createAdmin(req: Request) {
 
     const savedAdmin = await newAdmin.save();
     return NextResponse.json({ data: savedAdmin }, { status: 201 });
-  } catch (error) {
+  } catch (error: any) {
     return NextResponse.json(
-      { message: 'Internal Server Error' },
+      { message: error?.message || 'Internal Server Error' },
       { status: 500 }
     );
   }
@@ -124,9 +124,9 @@ export async function updateAdmin(req: Request, id: string) {
     }
 
     return NextResponse.json({ data: updatedAdmin }, { status: 200 });
-  } catch (error) {
+  } catch (error: any) {
     return NextResponse.json(
-      { message: 'Error updating admin' },
+      { message: error?.message || 'Error updating admin' },
       { status: 500 }
     );
   }
@@ -147,9 +147,9 @@ export async function deleteAdmin(req: Request, id: string) {
       { message: 'Admin deleted successfully' },
       { status: 200 }
     );
-  } catch (error) {
+  } catch (error: any) {
     return NextResponse.json(
-      { message: 'Error deleting admin' },
+      { message: error?.message || 'Internal Server Error' },
       { status: 500 }
     );
   }

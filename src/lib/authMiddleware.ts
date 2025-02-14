@@ -46,9 +46,9 @@ export async function authMiddleware(
     }
 
     return admin;
-  } catch (error) {
+  } catch (error: any) {
     return NextResponse.json(
-      { message: 'Unauthorized: Invalid token' },
+      { message: error?.message || 'Unauthorized: Invalid token' },
       { status: 401 }
     );
   }
