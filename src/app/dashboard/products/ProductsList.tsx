@@ -199,7 +199,10 @@ const ProductsList: React.FC<ProductsResponse> = ({ data, pagination }) => {
                 <TableCell>{product.category}</TableCell>
                 <TableCell>
                   <Image
-                    src={product.image.url || ''}
+                    src={
+                      product.image.url ||
+                      'https://placehold.co/600x400/000000/FFFFFF/png'
+                    }
                     alt={product.name}
                     width={30}
                     height={30}

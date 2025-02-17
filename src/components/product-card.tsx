@@ -7,7 +7,10 @@ const ProductCard = ({ product }: { product: ProductInterface }) => {
     <Card className="h-40 relative overflow-hidden hover:border-blue-500 cursor-pointer group">
       <CardContent className="p-4 flex items-center justify-center h-full relative">
         <ImageComponent
-          src={product.image.url}
+          src={
+            product.image.url ||
+            'https://placehold.co/600x400/000000/FFFFFF/png'
+          }
           alt={product.name}
           fill
           priority

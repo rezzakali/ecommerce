@@ -79,7 +79,10 @@ const UpdateImageDialog = ({
             <div className="flex flex-col items-center justify-center">
               {product && (
                 <Image
-                  src={product.image.url}
+                  src={
+                    product.image.url ||
+                    'https://placehold.co/600x400/000000/FFFFFF/png'
+                  }
                   alt={product.name}
                   width={100}
                   height={100}
