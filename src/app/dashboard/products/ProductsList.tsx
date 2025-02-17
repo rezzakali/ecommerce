@@ -199,7 +199,7 @@ const ProductsList: React.FC<ProductsResponse> = ({ data, pagination }) => {
                 <TableCell>{product.category}</TableCell>
                 <TableCell>
                   <Image
-                    src={product.image.url}
+                    src={product.image.url || ''}
                     alt={product.name}
                     width={30}
                     height={30}
