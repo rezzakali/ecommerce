@@ -21,7 +21,7 @@ const Page = ({ user }: { user: UserInterface }) => {
         {/* Left Side - Avatar & Role */}
         <div className="flex flex-col items-center justify-center md:items-center w-full md:w-1/3">
           <Avatar className="w-20 h-20">
-            <AvatarImage src="/avatar-placeholder.png" alt={user.name} />
+            <AvatarImage src="/avatar.png" alt={user.name} />
             <AvatarFallback>{user.name[0]}</AvatarFallback>
           </Avatar>
           <CardHeader className="text-center md:text-left">
