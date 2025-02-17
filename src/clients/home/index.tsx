@@ -19,7 +19,7 @@ export default function ProductGrid({
           <CardContent className="p-4 flex items-center justify-center h-full relative">
             <ImageComponent
               src={'/cup-black.avif'}
-              alt={products[0].name}
+              alt={'products[0].name'}
               fill
               priority
               className="object-contain"

@@ -8,7 +8,7 @@ const ProductCard = ({ product }: { product: ProductInterface }) => {
       <CardContent className="p-4 flex items-center justify-center h-full relative">
         <ImageComponent
           src={'/cup-black.avif'}
-          alt={product.name}
+          alt={'product.name'}
           fill
           priority
         />
