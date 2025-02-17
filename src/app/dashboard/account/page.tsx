@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { fetchUserById } from './actions';
 import Page from './client';
 

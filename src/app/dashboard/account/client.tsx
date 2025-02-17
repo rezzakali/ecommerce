@@ -1,3 +1,5 @@
+'use client';
+
 import { UserInterface } from '../users/user.interface';
 
 import {
