@@ -15,7 +15,7 @@ const Footer = () => {
   }
 
   return (
-    <footer className="py-8 px-3 border-t container m-auto">
+    <footer className="p-6 border-t m-auto">
       {/* 🔹 Footer Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* 🔹 About Section */}

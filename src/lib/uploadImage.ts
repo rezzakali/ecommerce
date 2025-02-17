@@ -1,6 +1,8 @@
 import imagekit from '../config/imageKitConfig';
 
-export async function uploadImage(file: File): Promise<string | null> {
+export async function uploadImage(
+  file: File
+): Promise<{ url: string | null; fileId: string | null } | null> {
   try {
     const folderPath = 'products';
 
@@ -15,7 +17,7 @@ export async function uploadImage(file: File): Promise<string | null> {
       folder: folderPath,
     });
 
-    return uploadResponse.url; // Return the uploaded image URL
+    return { url: uploadResponse.url, fileId: uploadResponse.fileId };
   } catch (error: any) {
     console.error('Image upload error:', error.message);
     return null;

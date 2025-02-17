@@ -6,7 +6,10 @@ export interface IProduct extends Document {
   price: number;
   stock: number;
   category: string;
-  imageUrl: string;
+  image: {
+    url: string;
+    fileId: string;
+  };
   createdBy: mongoose.Types.ObjectId;
 }
 
@@ -17,7 +20,10 @@ const ProductSchema = new Schema<IProduct>(
     price: { type: Number, required: true },
     stock: { type: Number, required: true, default: 0 },
     category: { type: String, required: true },
-    imageUrl: { type: String },
+    image: {
+      url: { type: String, required: true },
+      fileId: { type: String, default: '' }, // Will be updated
+    },
     createdBy: { type: Schema.Types.ObjectId, ref: 'Admin', required: true },
   },
   { timestamps: true }

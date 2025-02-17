@@ -1,79 +1,6 @@
 import dbConnect from '@/src/config/dbConfig';
 import Product from '@/src/models/Product';
 import { NextResponse } from 'next/server';
-import { productSchema } from '../app/api/validators/proudct.schema';
-import { authMiddleware } from '../lib/authMiddleware';
-import { superAdminMiddleware } from '../lib/superAdminMiddleware';
-import { uploadImage } from '../lib/uploadImage';
-
-export async function createProduct(req: Request) {
-  try {
-    await dbConnect();
-
-    // Authenticate Admin/Super Admin
-    const authenticatedAdmin = await authMiddleware(req);
-    if (authenticatedAdmin instanceof NextResponse) return authenticatedAdmin;
-
-    // Parse form data
-    const formData = await req.formData();
-
-    const file = formData.get('image') as File;
-
-    if (!file) {
-      return NextResponse.json(
-        { message: 'Image is required' },
-        { status: 400 }
-      );
-    }
-
-    // Convert other form data to an object
-    const data = {
-      name: formData.get('name'),
-      description: formData.get('description'),
-      price: Number(formData.get('price')),
-      category: formData.get('category'),
-      stock: Number(formData.get('stock')),
-    };
-
-    // Validate the product data
-    const validatedData = productSchema.safeParse(data);
-
-    if (!validatedData.success) {
-      const formattedErrors = validatedData.error.errors.reduce((acc, err) => {
-        acc[err.path.join('.')] = err.message;
-        return acc;
-      }, {} as Record<string, string>);
-
-      return NextResponse.json(
-        { message: 'Validation Error', errors: formattedErrors },
-        { status: 400 }
-      );
-    }
-
-    // Upload the image and get a URL
-    const imageUrl = await uploadImage(file);
-    if (!imageUrl) {
-      return NextResponse.json(
-        { message: 'Image upload failed' },
-        { status: 500 }
-      );
-    }
-
-    // Create the product with the image URL
-    const newProduct = await Product.create({
-      ...validatedData.data,
-      imageUrl,
-      createdBy: authenticatedAdmin._id,
-    });
-
-    return NextResponse.json({ data: newProduct }, { status: 201 });
-  } catch (error: any) {
-    return NextResponse.json(
-      { message: error?.message || 'Internal Server Error' },
-      { status: 500 }
-    );
-  }
-}
 
 export async function getAllProducts(req: Request) {
   try {
@@ -106,12 +33,12 @@ export async function getAllProducts(req: Request) {
 
     //  Sorting logic
     let sortQuery: any = {};
-    if (sort === 'latest') {
-      sortQuery.createdAt = -1; // Sort by latest
-    } else if (sort === 'price_asc') {
-      sortQuery.price = 1; // Sort price low to high
-    } else if (sort === 'price_desc') {
-      sortQuery.price = -1; // Sort price high to low
+    if (sort) {
+      const sortFields = ['name', 'createdAt', 'price', 'category', 'stock'];
+      const [field, order] = sort.split('_');
+      if (sortFields.includes(field)) {
+        sortQuery[field] = order === 'desc' ? -1 : 1;
+      }
     }
 
     // Fetch products with filters, pagination, and sorting
@@ -154,74 +81,6 @@ export async function getProductById(req: Request, id: string) {
       );
 
     return NextResponse.json({ data: product }, { status: 200 });
-  } catch (error: any) {
-    return NextResponse.json(
-      { message: error?.message || 'Internal Server Error' },
-      { status: 500 }
-    );
-  }
-}
-
-export async function updateProduct(req: Request, id: string) {
-  try {
-    await dbConnect();
-
-    const authenticatedAdmin = await authMiddleware(req);
-    if (authenticatedAdmin instanceof NextResponse) return authenticatedAdmin;
-
-    const body = await req.json();
-    const validatedData = productSchema.safeParse(body);
-
-    if (!validatedData.success) {
-      const formattedErrors = validatedData.error.errors.reduce((acc, err) => {
-        acc[err.path.join('.')] = err.message;
-        return acc;
-      }, {} as Record<string, string>);
-
-      return NextResponse.json(
-        { message: 'Validation Error', errors: formattedErrors },
-        { status: 400 }
-      );
-    }
-
-    const updatedProduct = await Product.findByIdAndUpdate(
-      id,
-      validatedData.data,
-      { new: true }
-    );
-    if (!updatedProduct)
-      return NextResponse.json(
-        { message: 'Product not found' },
-        { status: 404 }
-      );
-
-    return NextResponse.json({ data: updatedProduct }, { status: 200 });
-  } catch (error: any) {
-    return NextResponse.json(
-      { message: error?.message || 'Internal Server Error' },
-      { status: 500 }
-    );
-  }
-}
-
-export async function deleteProduct(req: Request, id: string) {
-  try {
-    await dbConnect();
-
-    const authenticatedAdmin = await superAdminMiddleware(req);
-    if (authenticatedAdmin instanceof NextResponse) return authenticatedAdmin;
-
-    const deletedProduct = await Product.findByIdAndDelete(id);
-    if (!deletedProduct)
-      return NextResponse.json(
-        { message: 'Product not found' },
-        { status: 404 }
-      );
-
-    return NextResponse.json(
-      { message: 'Product deleted successfully' },
-      { status: 200 }
-    );
   } catch (error: any) {
     return NextResponse.json(
       { message: error?.message || 'Internal Server Error' },
