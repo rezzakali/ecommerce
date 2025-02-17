@@ -18,10 +18,7 @@ export default function ProductGrid({
         <Card className="md:flex-1 lg:flex-[3] relative overflow-hidden hover:border-blue-500 cursor-pointer group h-36 md:h-auto lg:h-auto">
           <CardContent className="p-4 flex items-center justify-center h-full relative">
             <ImageComponent
-              src={
-                products[0].image.url ||
-                'https://placehold.co/600x400/000000/FFFFFF/png'
-              }
+              src={'/cup-black.avif'}
               alt={products[0].name}
               fill
               priority
