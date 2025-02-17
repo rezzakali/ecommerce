@@ -22,7 +22,6 @@ const page = async (props: {
     limit,
     sort,
   });
-
   return <ProductGrid products={response.data} />;
 };
 

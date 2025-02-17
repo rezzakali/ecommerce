@@ -18,8 +18,8 @@ export default function ProductGrid({
         <Card className="md:flex-1 lg:flex-[3] relative overflow-hidden hover:border-blue-500 cursor-pointer group h-36 md:h-auto lg:h-auto">
           <CardContent className="p-4 flex items-center justify-center h-full relative">
             <ImageComponent
-              src={'/cup-black.avif'}
-              alt={'products[0].name'}
+              src={products[0].image.url}
+              alt={products[0].name}
               fill
               priority
               className="object-contain"

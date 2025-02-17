@@ -7,8 +7,8 @@ const ProductCard = ({ product }: { product: ProductInterface }) => {
     <Card className="h-40 relative overflow-hidden hover:border-blue-500 cursor-pointer group">
       <CardContent className="p-4 flex items-center justify-center h-full relative">
         <ImageComponent
-          src={'/cup-black.avif'}
-          alt={'product.name'}
+          src={product.image.url}
+          alt={product.name}
           fill
           priority
         />
