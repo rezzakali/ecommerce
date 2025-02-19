@@ -51,7 +51,11 @@ const EditCategoryDialog = ({
   //  Form Submission Handler
   const onSubmit = async (values: z.infer<typeof categorySchema>) => {
     startTransition(async () => {
-      const data = { ...values, categoryId: category._id };
+      const data = {
+        ...values,
+        name: values.name.toLowerCase(),
+        categoryId: category._id,
+      };
       const res = await updateCategory(data);
 
       if (res?.error) {

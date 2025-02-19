@@ -13,6 +13,7 @@ const page = async (props: {
 
   const search = searchParams?.search || '';
   const sort = searchParams?.sort || '';
+  const category = searchParams?.sort || 'all';
   const page = Number(searchParams?.page) || 1;
   const limit = Number(searchParams?.limit) || 10;
 
@@ -21,6 +22,7 @@ const page = async (props: {
     page,
     limit,
     sort,
+    category,
   });
   return <ProductGrid products={response.data} />;
 };

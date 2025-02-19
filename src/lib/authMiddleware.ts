@@ -40,8 +40,7 @@ export async function authMiddleware() {
     }
 
     return user; // Return authenticated user
-  } catch (error) {
-    console.error('Auth Middleware Error:', error);
-    return { message: 'Internal Server Error', status: 500 };
+  } catch (error: any) {
+    return { message: error?.message || 'Internal Server Error', status: 500 };
   }
 }

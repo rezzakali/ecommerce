@@ -14,7 +14,6 @@ export async function getAllProducts(req: Request) {
       page = '1',
       limit = '10',
     } = Object.fromEntries(new URL(req.url).searchParams);
-
     //  Pagination setup
     const pageNumber = parseInt(page, 10) || 1;
     const pageSize = parseInt(limit, 10) || 10;
@@ -31,11 +30,13 @@ export async function getAllProducts(req: Request) {
       query.category = category;
     }
 
-    //  Sorting logic
+    // Sorting logic
     let sortQuery: any = {};
+
     if (sort) {
       const sortFields = ['name', 'createdAt', 'price', 'category', 'stock'];
       const [field, order] = sort.split('_');
+
       if (sortFields.includes(field)) {
         sortQuery[field] = order === 'desc' ? -1 : 1;
       }

@@ -4,6 +4,7 @@ import dbConnect from '@/src/config/dbConfig';
 import imagekit from '@/src/config/imageKitConfig';
 import { authMiddleware } from '@/src/lib/authMiddleware';
 import { uploadImage } from '@/src/lib/uploadImage';
+import { generateSlug } from '@/src/lib/utils';
 import { productSchema } from '@/src/lib/validations/product';
 import Product from '@/src/models/Product';
 import { revalidatePath } from 'next/cache';
@@ -15,16 +16,20 @@ export const getProducts = async ({
   page,
   limit,
   sort,
+  category,
 }: {
   search: string;
   page: number;
   limit: number;
   sort: string;
+  category: string;
 }) => {
   const res = await fetch(
     `${BASE_PATH}/api/products?page=${page}&limit=${limit}${
       search !== '' ? `&search=${search}` : ''
-    }${sort !== '' ? `&sort=${sort}` : ''}`,
+    }${sort !== '' ? `&sort=${sort}` : ''}${
+      category !== 'all' ? `&category=${category}` : ''
+    }`,
     {
       method: 'GET',
       headers: {
@@ -69,6 +74,7 @@ export async function createProduct(formData: FormData) {
 
     // Validate the product data
     const validatedData = productSchema.safeParse(data);
+
     if (!validatedData.success) {
       return {
         error: 'Validation Error',
@@ -77,8 +83,12 @@ export async function createProduct(formData: FormData) {
       };
     }
 
+    // generate slug using product name
+    const slug = generateSlug(validatedData?.data.name);
+
     // Upload the image
     const imageUploadedData = await uploadImage(file);
+
     if (!imageUploadedData) {
       return { error: 'Image upload failed', status: 500 };
     }
@@ -86,6 +96,7 @@ export async function createProduct(formData: FormData) {
     // Create the product
     const newProduct = await Product.create({
       ...validatedData.data,
+      slug,
       image: imageUploadedData,
       createdBy: authenticatedAdmin._id,
     });
@@ -126,6 +137,7 @@ export async function editProduct(formData: FormData) {
 
     // Validate the product data
     const validatedData = productSchema.safeParse(data);
+
     if (!validatedData.success) {
       return {
         error: 'Validation Error',
@@ -134,9 +146,12 @@ export async function editProduct(formData: FormData) {
       };
     }
 
+    // generate slug using product name
+    const slug = generateSlug(validatedData?.data.name);
+
     const updatedProduct = await Product.findByIdAndUpdate(
       data.id,
-      validatedData.data,
+      { ...validatedData.data, slug },
       { new: true }
     );
 
@@ -228,7 +243,6 @@ export async function deleteProduct(id: string, fileId: string) {
 
     return { message: 'Product deleted successfully', status: 200 };
   } catch (error: any) {
-    console.log('🚀 ~ deleteProduct ~ error:', error);
     return { message: error?.message || 'Internal Server Error', status: 500 };
   }
 }

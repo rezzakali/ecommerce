@@ -22,6 +22,7 @@ const page = async (props: {
     page,
     limit,
     sort,
+    category: 'all',
   });
 
   return <ProductsList {...response} />;

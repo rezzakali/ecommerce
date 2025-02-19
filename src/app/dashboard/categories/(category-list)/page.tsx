@@ -14,7 +14,7 @@ const page = async (props: {
   const search = searchParams?.search || '';
   const sort = searchParams?.sort || '';
   const page = searchParams?.page || '1';
-  const limit = searchParams?.limit || '10;';
+  const limit = searchParams?.limit || '10';
 
   const response = await getCategories({
     search,

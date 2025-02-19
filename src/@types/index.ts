@@ -1,3 +1,5 @@
+import { Category } from '../app/dashboard/categories/category.interface';
+
 export interface ProductInterface {
   _id: string;
   name: string;
@@ -12,6 +14,7 @@ export interface ProductInterface {
   createdBy: string;
   createdAt: string;
   updatedAt: string;
+  slug: string;
   __v: number;
 }
 
@@ -40,4 +43,7 @@ export interface DashboardData {
   }[];
 }
 
-// hello
+export interface HomeSearchInterface {
+  products: ProductInterface[];
+  categories: Category[];
+}

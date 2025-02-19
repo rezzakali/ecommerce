@@ -24,7 +24,7 @@ export default function ImageComponent({
   fill = false,
   quality = 75,
   priority = false,
-  sizes = '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw',
+  sizes = '(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 16vw',
   className = '',
   blurDataURL = 'https://placehold.co/600x400/000000/FFFFFF/png',
   ...props

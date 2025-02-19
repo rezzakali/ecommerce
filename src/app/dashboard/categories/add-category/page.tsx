@@ -30,7 +30,7 @@ const Page = () => {
 
   const onSubmit = async (values: z.infer<typeof categorySchema>) => {
     startTransition(async () => {
-      const res = await createCategory(values.name);
+      const res = await createCategory(values.name.toLocaleLowerCase());
 
       if (res?.error) {
         toast({
