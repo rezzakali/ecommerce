@@ -3,10 +3,8 @@ import { getCategories } from '../dashboard/categories/actions';
 import { getProducts } from '../dashboard/products/actions';
 import SearchClient from './client';
 
-const page = async ({
-  params,
-}: {
-  params: Promise<{
+const page = async (props: {
+  searchParams: Promise<{
     search: string;
     page: string;
     limit: string;
@@ -14,8 +12,7 @@ const page = async ({
     category: string;
   }>;
 }) => {
-  const searchParams = await params;
-
+  const searchParams = (await props.searchParams) || {};
   const search = searchParams.search || '';
   const sort = searchParams.sort || '';
   const category = searchParams.category || 'all';
@@ -33,7 +30,7 @@ const page = async ({
   const cate = await getCategories({
     search: '',
     page: '1',
-    limit: '50',
+    limit: '100',
     sort: 'name',
   });
 
