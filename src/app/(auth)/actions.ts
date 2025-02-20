@@ -79,7 +79,6 @@ export async function signin(credentials: { email: string; password: string }) {
 }
 
 export async function signout() {
-  const cookieStore = await cookies();
-  cookieStore.delete('session');
+  (await cookies()).delete('session');
   redirect('/');
 }

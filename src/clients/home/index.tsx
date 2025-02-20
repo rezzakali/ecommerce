@@ -36,7 +36,7 @@ export default function ProductGrid({
             <div className="absolute left-6 bg-black/70 text-white px-4 py-2 rounded-lg flex flex-col sm:flex-row sm:items-center sm:gap-2 sm:top-6 bottom-4 sm:bottom-auto w-fit">
               <span className="text-xs">{products[0].name}</span>
               <span className="bg-blue-600 text-white px-3 py-1 rounded-md text-sm mt-2 sm:mt-0">
-                &#8377;{products[0].price?.toFixed(2)}
+                ${products[0].price?.toFixed(2)}
               </span>
             </div>
           </CardContent>
@@ -59,7 +59,7 @@ export default function ProductGrid({
                   <div className="absolute left-6 bg-black/70 text-white px-4 py-2 rounded-lg flex flex-col sm:flex-row sm:items-center sm:gap-2 sm:top-6 bottom-4 sm:bottom-auto w-fit">
                     <span className="text-xs">{product.name}</span>
                     <span className="bg-blue-600 text-white px-3 py-1 rounded-md text-sm mt-2 sm:mt-0">
-                      &#8377;{product.price?.toFixed(2)}
+                      ${product.price?.toFixed(2)}
                     </span>
                   </div>
                 </CardContent>

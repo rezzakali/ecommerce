@@ -26,7 +26,6 @@ export async function GET() {
     const latestOrders = await Order.find()
       .sort({ createdAt: -1 })
       .limit(5)
-      .select('orderNumber totalAmount status createdAt')
       .lean();
 
     return NextResponse.json({

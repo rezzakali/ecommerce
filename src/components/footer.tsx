@@ -20,12 +20,11 @@ const Footer = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* 🔹 About Section */}
         <div>
-          <h2 className="text-lg font-semibold">Brand</h2>
+          <h2 className="text-lg font-semibold">QuickKart</h2>
           <p className="mt-2">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur
-            totam unde illum suscipit nobis sed iste velit earum porro, officia
-            vero, sit fuga, laboriosam doloremque quidem neque fugiat iusto
-            repellendus.
+            Your one-stop e-commerce destination for seamless shopping. Browse a
+            wide range of products, enjoy a smooth checkout experience. Shop
+            smart, shop fast with QuickKart!
           </p>
         </div>
 
@@ -45,6 +44,9 @@ const Footer = () => {
             </li>
             <li>
               <Link href="/contact-us">Contact Us</Link>
+            </li>
+            <li>
+              <Link href="/how-to-use">How To Use</Link>
             </li>
           </ul>
         </div>

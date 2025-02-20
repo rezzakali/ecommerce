@@ -2,6 +2,7 @@
 
 import { HomeSearchInterface } from '@/src/@types';
 import ProductCard from '@/src/components/product-card';
+import { SearchForm } from '@/src/components/search-form';
 import {
   Select,
   SelectContent,
@@ -11,6 +12,7 @@ import {
 } from '@/src/components/ui/select';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
 
 const sortingOptions = [
   { label: 'Newest', value: 'createdAt_desc' },
@@ -47,11 +49,22 @@ const SearchClient: React.FC<HomeSearchInterface> = ({
     router.replace(pathname);
   };
 
+  const handleSearch = useDebouncedCallback((term) => {
+    const params = new URLSearchParams(searchParams);
+    if (term) {
+      params.set('search', term);
+    } else {
+      params.delete('search');
+    }
+    router.replace(`/search?${params.toString()}`);
+  }, 300);
+
   return (
     <div className="p-4">
       {/* Mobile: Categories & Sorting as Select Options */}
       <div className="block sm:hidden mb-4">
         <div className="flex flex-col gap-2">
+          <SearchForm onSearch={(query) => handleSearch(query)} />
           <Select
             value={searchedCategory || 'all'}
             onValueChange={(value) => updateQuery('category', value)}

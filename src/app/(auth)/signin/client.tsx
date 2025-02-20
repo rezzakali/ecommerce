@@ -36,7 +36,6 @@ const Signin = () => {
   const onSubmit = async (values: z.infer<typeof signinFormSchema>) => {
     startTransition(async () => {
       const res = await signin(values);
-
       localStorage.setItem('user', JSON.stringify(res.data));
 
       if (res?.error) {
@@ -53,9 +52,11 @@ const Signin = () => {
         description: res.message || 'Logged in!',
       });
       if (res && res.data && res.data.role === 'Customer') {
-        router.push('/');
+        router.replace('/');
+        router.refresh();
       } else {
-        router.push('/dashboard');
+        router.replace('/dashboard');
+        router.refresh();
       }
     });
   };

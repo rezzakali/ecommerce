@@ -1,15 +1,24 @@
 import { fetchUsers } from './actions';
 import UserLists from './user-lists';
 
-const page = async (props: {
-  searchParams?: Promise<{
+export const metadata = {
+  title: 'Users | QuickKart Dashboard',
+  description: 'Manage customers, vendors, and admin users in QuickKart.',
+  robots: 'noindex, nofollow',
+  keywords: 'user management, QuickKart users, admin panel',
+};
+
+const page = async ({
+  params,
+}: {
+  params: Promise<{
     search?: string;
     page?: string;
     limit?: string;
     sort?: string;
   }>;
 }) => {
-  const searchParams = await props.searchParams;
+  const searchParams = await params;
 
   const search = searchParams?.search || '';
   const sort = searchParams?.sort || '';

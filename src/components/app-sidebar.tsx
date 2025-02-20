@@ -59,20 +59,8 @@ const data = {
       icon: ShoppingCart,
       items: [
         {
-          title: 'General',
-          url: '#',
-        },
-        {
-          title: 'Team',
-          url: '#',
-        },
-        {
-          title: 'Billing',
-          url: '#',
-        },
-        {
-          title: 'Limits',
-          url: '#',
+          title: 'Orders List',
+          url: '/dashboard/orders',
         },
       ],
     },

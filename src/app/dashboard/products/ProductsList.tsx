@@ -194,7 +194,7 @@ const ProductsList: React.FC<ProductsResponse> = ({ data, pagination }) => {
                       : product.description}
                   </span>
                 </TableCell>
-                <TableCell>&#8377;{product.price?.toFixed(2)}</TableCell>
+                <TableCell>${product.price?.toFixed(2)}</TableCell>
                 <TableCell>{product.stock}</TableCell>
                 <TableCell>{product.category}</TableCell>
                 <TableCell>

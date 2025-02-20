@@ -1,6 +1,13 @@
 import { getCategories } from '../actions';
 import CategoryLists from '../categoryLists';
 
+export const metadata = {
+  title: 'Categories | QuickKart Dashboard',
+  description: 'Manage product categories to organize your QuickKart store.',
+  robots: 'noindex, nofollow',
+  keywords: 'category management, product categories, QuickKart store',
+};
+
 const page = async (props: {
   searchParams?: Promise<{
     search?: string;

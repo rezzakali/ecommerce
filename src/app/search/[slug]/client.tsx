@@ -7,7 +7,6 @@ import { useCart } from '@/src/context/CartContext';
 import { useToast } from '@/src/hooks/use-toast';
 import Image from 'next/image';
 import { useState } from 'react';
-import { addToCart } from '../../cart/actions';
 
 const ProductDetails = ({ product }: { product: ProductInterface }) => {
   const [loading, setLoading] = useState(false);
@@ -19,11 +18,18 @@ const ProductDetails = ({ product }: { product: ProductInterface }) => {
   const handleAddToCart = async () => {
     setLoading(true);
     try {
-      const res = await addToCart(product._id);
-      if (res?.error) {
+      const res = await fetch('/api/cart/add', {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({ itemId: product._id }),
+      });
+
+      const data = await res.json();
+
+      if (data?.error) {
         toast({
           title: 'Error',
-          description: res.error || 'Something went wrong!',
+          description: data.error || 'Something went wrong!',
           variant: 'destructive', // Optional: Use error styling
         });
         return; // Stop execution if there's an error
@@ -31,10 +37,10 @@ const ProductDetails = ({ product }: { product: ProductInterface }) => {
 
       toast({
         title: 'Success',
-        description: res.message || 'Product added to cart!',
+        description: data.message || 'Product added to cart!',
       });
-      setLoading(false);
       refreshCart();
+      setLoading(false);
     } catch (error: any) {
       toast({
         title: 'Error',
@@ -83,7 +89,7 @@ const ProductDetails = ({ product }: { product: ProductInterface }) => {
         <Button
           className="mt-4 w-full md:w-1/2"
           onClick={handleAddToCart}
-          disabled={loading}
+          disabled={loading || product.stock === 0}
         >
           {loading ? 'Loading...' : 'Add to Cart'}
         </Button>

@@ -15,7 +15,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const refreshCart = async () => {
     try {
       const res = await fetch('/api/cart', { credentials: 'include' });
-      if (!res.ok) throw new Error('Failed to fetch cart');
+      // if (!res.ok) throw new Error('Failed to fetch cart');
 
       const data = await res.json();
       setCartCount(data?.data?.items?.length || 0);

@@ -1,37 +1,20 @@
 import { CartItem } from '@/src/app/cart/cart.interface';
 import dbConnect from '@/src/config/dbConfig';
-import { decrypt } from '@/src/lib/session';
+import { verifySession } from '@/src/lib/verifySession';
 import Cart from '@/src/models/Cart';
-import User from '@/src/models/User';
+import Product from '@/src/models/Product';
 import { NextResponse, type NextRequest } from 'next/server';
 
 export async function PATCH(req: NextRequest) {
   try {
-    // Check if session exists
-    const authSession = req.cookies.get('session')?.value;
-    if (!authSession) {
-      return NextResponse.json({
-        error: 'Unauthorized: No session found',
-        status: 401,
-      });
-    }
+    // 🔹 Call `verifySession`
+    const sessionData = await verifySession(req);
 
-    let session;
-    try {
-      session = await decrypt(authSession);
-    } catch (error) {
-      return NextResponse.json({
-        error: 'Unauthorized: Invalid session data',
-        status: 401,
-      });
-    }
+    // 🔹 If it returns a NextResponse (error case), return immediately
+    if (sessionData instanceof NextResponse) return sessionData;
 
-    if (!session?.userId) {
-      return NextResponse.json({
-        error: 'Unauthorized: Missing user ID in session',
-        status: 401,
-      });
-    }
+    //  Safe to access `userId`
+    const { userId } = sessionData;
 
     // Parse request body
     const { itemId } = await req.json();
@@ -43,20 +26,14 @@ export async function PATCH(req: NextRequest) {
     // Connect to DB
     await dbConnect();
 
-    // Fetch user and cart
-    const user = await User.findById(session.userId);
-    if (!user) {
-      return NextResponse.json({ error: 'User not found', status: 404 });
-    }
-
-    const cart = await Cart.findOne({ user: user._id }).populate(
-      'items.product'
-    );
+    // 🔹 Fetch the cart with populated product details
+    const cart = await Cart.findOne({ user: userId }).populate('items.product');
     if (!cart) {
-      return NextResponse.json({ error: 'Cart not found', status: 404 });
+      return NextResponse.json({ error: 'Cart not found' }, { status: 404 });
     }
 
-    // Find item in cart and increase quantity
+    // 🔹 Find the item in the cart
+
     const itemIndex = cart.items.findIndex(
       (item: CartItem) => item._id.toString() === itemId
     );
@@ -67,10 +44,34 @@ export async function PATCH(req: NextRequest) {
       });
     }
 
-    cart.items[itemIndex].quantity += 1;
-    await cart.save();
+    const cartItem = cart.items[itemIndex];
+    const product = await Product.findById(cartItem.product);
 
-    return NextResponse.json({ data: cart, success: true });
+    if (!product) {
+      return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+    }
+
+    // 🔹 Ensure stock availability before increasing quantity
+    if (product.stock <= 0) {
+      return NextResponse.json(
+        { error: 'Product is out of stock' },
+        { status: 400 }
+      );
+    }
+
+    if (cartItem.quantity >= product.stock) {
+      return NextResponse.json(
+        { error: `Only ${product.stock} items available in stock` },
+        { status: 400 }
+      );
+    }
+
+    cart.items[itemIndex].quantity += 1;
+    await cart.save(); // Save updated cart
+
+    await Product.findByIdAndUpdate(product._id, { $inc: { stock: -1 } }); // Decrease stock safely
+
+    return NextResponse.json({ success: true, data: cart });
   } catch (error: any) {
     return NextResponse.json({
       error: error.message || 'Internal Server Error',

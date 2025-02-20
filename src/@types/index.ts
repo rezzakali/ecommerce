@@ -1,4 +1,5 @@
 import { Category } from '../app/dashboard/categories/category.interface';
+import { Order } from '../app/orders/client';
 
 export interface ProductInterface {
   _id: string;
@@ -35,12 +36,7 @@ export interface DashboardData {
   totalOrders: number;
   totalProducts: number;
   totalCategories: number;
-  latestOrders: {
-    orderNumber: string;
-    totalAmount: number;
-    status: string;
-    createdAt: string;
-  }[];
+  latestOrders: Order[];
 }
 
 export interface HomeSearchInterface {

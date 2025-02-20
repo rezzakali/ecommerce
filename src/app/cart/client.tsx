@@ -4,9 +4,12 @@ import { Button } from '@/src/components/ui/button';
 import { Card, CardContent } from '@/src/components/ui/card';
 import { Skeleton } from '@/src/components/ui/skeleton';
 import { useCart } from '@/src/context/CartContext';
+import { useToast } from '@/src/hooks/use-toast';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { CartItem } from './cart.interface';
+import Checkout from './checkout';
 
 const CartClient = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -15,6 +18,9 @@ const CartClient = () => {
   const [loadingItems, setLoadingItems] = useState<string[]>([]);
 
   const { refreshCart } = useCart();
+  const { toast } = useToast();
+
+  const router = useRouter();
 
   const totalAmount = cartItems.reduce(
     (total, item) => total + item.product.price * item.quantity,
@@ -35,9 +41,14 @@ const CartClient = () => {
         credentials: 'include',
       });
 
-      if (!res.ok) throw new Error(`Failed to ${action} item!`);
-
       const data = await res.json();
+      if (data.error) {
+        toast({
+          title: 'Error',
+          description: data.error || 'Failed to increase quantity!',
+        });
+      }
+
       if (data?.data?.items) {
         setCartItems(data.data.items);
         refreshCart();
@@ -55,12 +66,10 @@ const CartClient = () => {
         setLoading(true);
         const res = await fetch('/api/cart', { credentials: 'include' });
 
-        if (!res.ok) throw new Error(`Error: ${res.status} ${res.statusText}`);
-
         const data = await res.json();
         setCartItems(data?.data?.items || []);
       } catch (error) {
-        setError('Failed to fetch cart items');
+        setCartItems([]);
       } finally {
         setLoading(false);
       }
@@ -93,13 +102,14 @@ const CartClient = () => {
       </div>
     );
 
-  if (error) return <p>{error}</p>;
-
   return (
     <div className="max-w-4xl mx-auto p-4">
       {cartItems.length === 0 ? (
-        <div className="flex items-center justify-center h-[70vh]">
+        <div className="flex flex-col items-center justify-center h-[70vh]">
           <p className="text-center text-gray-500">Your cart is empty.</p>
+          <Button onClick={() => router.push('/search')} className="mt-4">
+            Continue Shopping
+          </Button>
         </div>
       ) : (
         <React.Fragment>
@@ -165,15 +175,7 @@ const CartClient = () => {
               })}
             </div>
 
-            <div className="w-full md:w-1/3">
-              <div className="p-4 border rounded-xl shadow">
-                <h3 className="text-xl font-semibold mb-4">Checkout</h3>
-                <div className="text-right font-semibold text-xl mb-4">
-                  Total: ₹{totalAmount.toFixed(2)}
-                </div>
-                <Button className="w-full">Proceed to Checkout</Button>
-              </div>
-            </div>
+            <Checkout totalAmount={totalAmount} />
           </div>
         </React.Fragment>
       )}

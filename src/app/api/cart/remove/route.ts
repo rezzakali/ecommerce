@@ -1,38 +1,21 @@
 import { CartItem } from '@/src/app/cart/cart.interface';
 import dbConnect from '@/src/config/dbConfig';
-import { decrypt } from '@/src/lib/session';
+import { verifySession } from '@/src/lib/verifySession';
 import Cart from '@/src/models/Cart';
+import Product from '@/src/models/Product';
 import User from '@/src/models/User';
 import { NextResponse, type NextRequest } from 'next/server';
 
 export async function PATCH(req: NextRequest) {
   try {
-    // Check if session exists
-    const authSession = req.cookies.get('session')?.value;
-    if (!authSession) {
-      return NextResponse.json({
-        error: 'Unauthorized: No session found',
-        status: 401,
-      });
-    }
+    // 🔹 Call `verifySession`
+    const sessionData = await verifySession(req);
 
-    let session;
-    try {
-      session = await decrypt(authSession);
-    } catch (error) {
-      return NextResponse.json({
-        error: 'Unauthorized: Invalid session data',
-        status: 401,
-      });
-    }
+    // 🔹 If it returns a NextResponse (error case), return immediately
+    if (sessionData instanceof NextResponse) return sessionData;
 
-    if (!session?.userId) {
-      return NextResponse.json({
-        error: 'Unauthorized: Missing user ID in session',
-        status: 401,
-      });
-    }
-
+    //  Safe to access `userId`
+    const { userId } = sessionData;
     // Parse request body
     const { itemId } = await req.json();
 
@@ -44,7 +27,7 @@ export async function PATCH(req: NextRequest) {
     await dbConnect();
 
     // Fetch user and cart
-    const user = await User.findById(session.userId);
+    const user = await User.findById(userId);
     if (!user) {
       return NextResponse.json({ error: 'User not found', status: 404 });
     }
@@ -67,8 +50,16 @@ export async function PATCH(req: NextRequest) {
       });
     }
 
-    cart.items.splice(itemIndex, 1); // Remove item
+    const removedItem = cart.items[itemIndex];
+    cart.items.splice(itemIndex, 1);
     await cart.save();
+
+    // Restore stock
+    const product = await Product.findById(removedItem.product);
+    if (product) {
+      product.stock += removedItem.quantity;
+      await product.save();
+    }
 
     return NextResponse.json({ data: cart, success: true });
   } catch (error: any) {

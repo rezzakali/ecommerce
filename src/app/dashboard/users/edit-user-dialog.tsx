@@ -77,7 +77,7 @@ const EditUserDialog = ({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-h-[30rem] overflow-y-scroll">
         <DialogHeader>
-          <DialogTitle>Edit Product</DialogTitle>
+          <DialogTitle>Edit User</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

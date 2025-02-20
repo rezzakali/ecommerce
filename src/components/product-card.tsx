@@ -20,9 +20,7 @@ const ProductCard = ({ product }: { product: ProductInterface }) => {
 
         <CardFooter className="p-4 flex flex-col items-center">
           <h3 className="font-semibold text-sm text-center">{product.name}</h3>
-          <p className="font-bold text-sm">
-            &#8377;{product.price?.toFixed(2)}
-          </p>
+          <p className="font-bold text-sm">${product.price?.toFixed(2)}</p>
         </CardFooter>
       </Card>
     </Link>
