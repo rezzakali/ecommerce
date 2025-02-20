@@ -75,7 +75,7 @@ const Footer = () => {
 
       <div className="flex flex-col-reverse md:flex-row items-center mt-8 justify-between border-t px-8 py-2 gap-4">
         <div className="text-center text-sm">
-          © {new Date().getFullYear()} <strong>Brand</strong>. All rights
+          © {new Date().getFullYear()} <strong>QuickKart</strong>. All rights
           reserved.
         </div>
         <ModeToggle />

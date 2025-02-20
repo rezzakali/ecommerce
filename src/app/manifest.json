@@ -1,0 +1,26 @@
+{
+    "name": "QuickKart",
+    "short_name": "QuickKart",
+    "description": "Your one-stop e-commerce destination for seamless shopping. Browse a wide range of products, enjoy a smooth checkout experience. Shop smart, shop fast with QuickKart!",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#374151",
+    "theme_color": "#4F46E5",
+    "icons": [
+        {
+            "src": "/favicon.png",
+            "sizes": "64x64",
+            "type": "image/png"
+        },
+        {
+            "src": "/favicon.png",
+            "sizes": "128x128",
+            "type": "image/png"
+        },
+        {
+            "src": "/favicon.png",
+            "sizes": "256x256",
+            "type": "image/png"
+        }
+    ]
+}
